@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
+import '../components/LoginPage.css';
 
 function LoginPage() {
     // State 관리 (rememberMe 제거)
