@@ -173,7 +173,7 @@ function LoginPage() {
                         </div>
 
                         {/* 비밀번호 찾기 링크 (오른쪽 정렬) */}
-                        <div style={{ textAlign: 'right', marginBottom: 'var(--space-24)' }}>
+                        <div style={{ textAlign: 'right', marginBottom: 'var(--space-12)' }}>
                             <a href="#" className="forgot-link">비밀번호 찾기</a>
                         </div>
 
