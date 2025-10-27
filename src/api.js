@@ -36,7 +36,8 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // 401 또는 403 모두 재발급 트리거로 인식
-    if ((error.response && (error.response.status === 401 || error.response.status === 403)) && !originalRequest._retry) {
+    const shouldRetry = error.response?.status === 401 || error.response?.status === 403;
+    if (shouldRetry && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
