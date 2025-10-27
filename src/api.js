@@ -61,7 +61,6 @@ api.interceptors.response.use(
         console.error('토큰 재발급 실패:', refreshError);
         localStorage.removeItem('accessToken');
         cookies.remove('refreshToken');
-        //localStorage.removeItem('refreshToken');
         window.location.href = '/login';
       }
     }
