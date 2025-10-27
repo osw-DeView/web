@@ -53,7 +53,7 @@ api.interceptors.response.use(
         localStorage.setItem('accessToken', accessToken);
         setCookie('refreshToken', newRefresh, { path: '/', secure: true, sameSite: 'lax' });
    
-        // // 헤더 갱신 후 재시도
+        // 헤더 갱신 후 재시도
          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
  
         return api(originalRequest);
