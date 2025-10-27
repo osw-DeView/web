@@ -18,8 +18,6 @@ function App() {
           </div>
           }
         />
-        {/* 404 - 정의되지 않은 모든 경로를 메인으로 리다이렉트 */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

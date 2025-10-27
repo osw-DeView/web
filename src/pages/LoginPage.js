@@ -1,8 +1,7 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../components/LoginPage.css';
+import '../styles/LoginPage.css';
 
 function LoginPage() {
     // State 관리 (rememberMe 제거)
@@ -59,7 +58,7 @@ function LoginPage() {
             }
 
             // 메인 페이지로 이동
-            navigate('/main');
+            navigate('/');
 
         } catch (error) {
             // 에러 처리
