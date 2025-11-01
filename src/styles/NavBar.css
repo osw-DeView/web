@@ -1,0 +1,246 @@
+/* Header */
+.navbar-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 50;
+  background-color: white;
+}
+
+/* Main Navigation Container */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .navbar-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Logo */
+.navbar-logo-wrapper {
+  display: flex;
+}
+
+@media (min-width: 1024px) {
+  .navbar-logo-wrapper {
+    flex: 1 1 0%;
+  }
+}
+
+.navbar-logo-link {
+  margin: -0.375rem;
+  padding: 0.375rem;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Mobile Menu Button */
+.navbar-mobile-button {
+  display: flex;
+}
+
+@media (min-width: 1024px) {
+  .navbar-mobile-button {
+    display: none;
+  }
+}
+
+.navbar-menu-button {
+  margin: -0.625rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  padding: 0.625rem;
+  color: #374151;
+}
+
+/* Desktop Navigation */
+.navbar-desktop-nav {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .navbar-desktop-nav {
+    display: flex;
+    gap: 3rem;
+  }
+}
+
+.navbar-nav-link {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Login Button */
+.navbar-login-wrapper {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .navbar-login-wrapper {
+    display: flex;
+    flex: 1 1 0%;
+    justify-content: flex-end;
+  }
+}
+
+.navbar-login-link {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Icon */
+.navbar-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Mobile Dialog */
+.navbar-mobile-dialog {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .navbar-mobile-dialog {
+    display: none;
+  }
+}
+
+/* Mobile Overlay */
+.navbar-mobile-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+/* Mobile Panel */
+.navbar-mobile-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 50;
+  width: 100%;
+  overflow-y: auto;
+  background-color: white;
+  padding: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .navbar-mobile-panel {
+    max-width: 24rem;
+    box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.1);
+  }
+}
+
+/* Mobile Header */
+.navbar-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-mobile-logo-link {
+  margin: -0.375rem;
+  padding: 0.375rem;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.navbar-mobile-close {
+  margin: -0.625rem;
+  border-radius: 0.375rem;
+  padding: 0.625rem;
+  color: #374151;
+}
+
+/* Mobile Content */
+.navbar-mobile-content {
+  margin-top: 1.5rem;
+  display: flow-root;
+}
+
+.navbar-mobile-divider {
+  margin-top: -1.5rem;
+  margin-bottom: -1.5rem;
+  border-top: 1px solid rgba(107, 114, 128, 0.1);
+}
+
+.navbar-mobile-nav-section {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.navbar-mobile-nav-link {
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+  display: block;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.navbar-mobile-nav-link:hover {
+  background-color: #f9fafb;
+}
+
+/* Mobile Login Section */
+.navbar-mobile-login-section {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-top: 1px solid rgba(107, 114, 128, 0.1);
+}
+
+.navbar-mobile-login-link {
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+  display: block;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.navbar-mobile-login-link:hover {
+  background-color: #f9fafb;
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
