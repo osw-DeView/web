@@ -4,19 +4,17 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Test from './pages/Test'
 import Home from './pages/Home'
 import SignUp from './pages/SignupPage'
+import Login from './pages/LoginPage'
 
 function App() {
   return (
     <Router>
-      <div> {/*className="min-h-screen bg-gray-100 flex flex-col*/}
-        <main> {/* className="flex-grow container mx-auto p-4"*/}
-          <Routes>
-            <Route path="/test" element={<Test />} />
-            <Route path='/home' element={<Home />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Routes>
-        </main>
-      </div>
+        <Routes>
+          <Route path="/test" element={<Test />} />
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
     </Router>
   );
 }
