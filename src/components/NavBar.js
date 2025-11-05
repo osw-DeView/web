@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
+import api from '../api';
+import { getCookie, deleteCookie } from '../utils/cookieUtils';
+
 
 const navigation = [
   { name: 'CS 전공지식 학습하기', href: '#' },
@@ -19,8 +22,30 @@ function NavBar() {
 
   }, []);
 
-  const handleLogout = () => {
-    // 미구현
+
+const handleLogout = async() => {
+    const refreshToken = getCookie('refreshToken');
+
+    const logoutPayload = { 
+        refreshToken: refreshToken 
+    };
+
+    try {
+        if (refreshToken) {
+            await api.post("/auth/logout", logoutPayload); 
+            console.log("서버 Refresh Token 삭제 성공");
+        }
+        localStorage.removeItem('accessToken'); 
+        deleteCookie('refreshToken'); 
+
+        window.location.href = '/'; 
+
+    } catch (error) {
+        console.error("로그아웃 요청 처리 중 오류 발생. 클라이언트 토큰은 삭제합니다.", error);
+        
+        localStorage.removeItem('accessToken'); 
+        deleteCookie('refreshToken');
+    }
   };
 
   return (
