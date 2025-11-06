@@ -1,17 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
 import api from '../api';
-import { Cookies } from "react-cookie";
-
-const cookies = new Cookies();
-
-export const setCookie = (name, value, options) => {
-  return cookies.set(name, value, { ...options });
-};
-
-export const getCookie = (name) => {
-  return cookies.get(name);
-};
+import { setCookie } from '../utils/cookieUtils';
 
 function Login() {
   const navigate = useNavigate();
@@ -195,7 +185,7 @@ function Login() {
 
           <div className="mt-6 text-center text-sm">
             아직 계정이 없으신가요? 
-            <a href="/join" className="text-indigo-600 hover:text-indigo-500 font-semibold ml-1 transition duration-150">회원가입</a>
+            <a href="/signup" className="text-indigo-600 hover:text-indigo-500 font-semibold ml-1 transition duration-150">회원가입</a>
           </div>
         </div>
       </div>
