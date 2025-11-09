@@ -5,7 +5,7 @@ import { getCookie, deleteCookie } from '../utils/cookieUtils';
 
 
 const navigation = [
-  { name: 'CS 전공지식 학습하기', href: '#' },
+  { name: 'CS 전공지식 학습하기', href: '/major' },
   { name: '예상 면접 질문 학습하기', href: '#' },
   { name: '기술 면접 대비하기', href: '#' },
   { name: '면접 경험 공유하기', href: '#' },
@@ -54,7 +54,7 @@ const handleLogout = async() => {
         <div className="flex h-16 items-center justify-between">
 
           <div className="flex items-center">
-            <a href="/home" className="flex items-center space-x-2 group">
+            <a href="/" className="flex items-center space-x-2 group">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200">
                 <span className="text-white font-bold text-sm">DV</span>
               </div>
