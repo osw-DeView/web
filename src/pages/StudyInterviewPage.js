@@ -4,7 +4,7 @@ import NavBar from '../components/NavBar';
 import { Menu, X, BookOpen, ChevronDown } from 'lucide-react';
 import api from "../api"; 
 
-const MajorStudyPage = () => {
+const StudyInterviewPage = () => {
   const [categories, setCategories] = useState([]); // 전체 카테고리
   const [selectedFirst, setSelectedFirst] = useState(""); // 선택된 1차 카테고리
   const [selectedSecond, setSelectedSecond] = useState(""); // 선택된 2차 카테고리
@@ -19,9 +19,10 @@ const MajorStudyPage = () => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const res = await api.get("/api/study/categories");
+        const res = await api.get("/api/interview/categories");
         if (res.data.success) {
           const cats = res.data.data.categories;
+          console.log(cats);
           setCategories(cats);
         } else {
           setError("카테고리 데이터를 불러올 수 없습니다.");
@@ -37,7 +38,7 @@ const MajorStudyPage = () => {
   }, []);
 
   const toggleFirstCategory = (categoryName) => {
-    // 이미 열려 있으면 닫고 (null), 아니면 새로 연다.
+    // 이미 열려 있으면 (즉, 다시 누르면) 닫고, 아니면 새로 연다.
     setOpenFirstCategory(openFirstCategory === categoryName ? null : categoryName);
   };
 
@@ -50,9 +51,9 @@ const MajorStudyPage = () => {
       setError("");
       setSidebarOpen(false); // 모바일에서 선택 후 사이드바 닫기
 
-      const res = await api.post("/api/study/contents", {
-        firstCategory: first,
-        secondCategory: second,
+      const res = await api.post("/api/interview/answers", {
+        category: first,
+        keyword: second,
       });
 
       if (res.data.success) {
@@ -141,24 +142,24 @@ const MajorStudyPage = () => {
                 </div>
                 <div>
                   <h2 className="font-bold text-lg text-gray-800">학습 카테고리</h2>
-                  <p className="text-sm text-gray-600">CS 전공지식</p>
+                  <p className="text-sm text-gray-600">예상 면접 질문</p>
                 </div>
               </div>
             </div>
 
-            {/* 카테고리 목록 */}
+           {/* 카테고리 목록 */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {categories.map((cat) => (
-                <div key={cat.firstCategory} className="space-y-2">
+                <div key={cat.category} className="space-y-2">
                   <div 
                     className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
-                    onClick={() => toggleFirstCategory(cat.firstCategory)}
+                    onClick={() => toggleFirstCategory(cat.category)}
                   >
                     <div className="w-2 h-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
                     <span className="font-bold text-gray-800 text-sm flex-1">
-                      {cat.firstCategory}
+                      {cat.category}
                     </span>
-                    <span className={`transform transition-transform duration-300 ${openFirstCategory === cat.firstCategory ? 'rotate-180' : 'rotate-0'}`}>
+                    <span className={`transform transition-transform duration-300 ${openFirstCategory === cat.category ? 'rotate-180' : 'rotate-0'}`}>
                         <ChevronDown 
                             className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
                                 openFirstCategory === cat.firstCategory ? 'rotate-180' : 'rotate-0'
@@ -167,17 +168,17 @@ const MajorStudyPage = () => {
                     </span>
                   </div>
                   
-                  {openFirstCategory === cat.firstCategory && (
+                  {openFirstCategory === cat.category && (
                     <ul className="ml-4 space-y-1">
-                      {(cat.secondCategory || []).map((sec) => (
+                      {(cat.keyword || []).map((sec) => ( 
                         <li
                           key={sec}
-                          onClick={() => fetchContent(cat.firstCategory, sec)}
+                          onClick={() => fetchContent(cat.category, sec)}
                           className={`
                             cursor-pointer px-4 py-2.5 rounded-lg text-sm font-medium
                             transition-all duration-200 transform hover:scale-105
                             ${
-                              selectedFirst === cat.firstCategory &&
+                              selectedFirst === cat.category &&
                               selectedSecond === sec
                                 ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
                                 : "hover:bg-blue-50 text-gray-700 hover:text-blue-600"
@@ -194,7 +195,7 @@ const MajorStudyPage = () => {
             </div>
           </div>
         </aside>
-
+        
         {/* 본문 영역 */}
         <main className="flex-1 p-4 md:p-8 overflow-y-auto">
           <div className="max-w-5xl mx-auto">
@@ -249,7 +250,7 @@ const MajorStudyPage = () => {
                   >
                     <div className="p-6 md:p-8">
                       <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b border-gray-200 pb-4 group-hover:text-blue-600 transition-colors duration-200">
-                        {item.title}
+                        {item.question}
                       </h2>
                       <div className="prose prose-lg prose-blue max-w-none text-gray-700 leading-relaxed">
                         <ReactMarkdown
@@ -268,7 +269,7 @@ const MajorStudyPage = () => {
                             blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-4 italic bg-blue-50 rounded-r" {...props} />,
                           }}
                         >
-                          {item.body}
+                          {item.answer}
                         </ReactMarkdown>
                       </div>
                     </div>
@@ -276,11 +277,11 @@ const MajorStudyPage = () => {
                 ))}
               </div>
             )}
-          </div>
+          </div> 
         </main>
       </div>
     </div>
   );
 };
 
-export default MajorStudyPage;
+export default StudyInterviewPage;
