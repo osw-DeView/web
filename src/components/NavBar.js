@@ -5,8 +5,8 @@ import { getCookie, deleteCookie } from '../utils/cookieUtils';
 
 
 const navigation = [
-  { name: 'CS 전공지식 학습하기', href: '/major' },
-  { name: '예상 면접 질문 학습하기', href: '#' },
+  { name: 'CS 전공지식 학습하기', href: '/study/major' },
+  { name: '예상 면접 질문 학습하기', href: '/study/interview' },
   { name: '기술 면접 대비하기', href: '#' },
   { name: '면접 경험 공유하기', href: '#' },
 ];
