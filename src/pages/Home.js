@@ -57,13 +57,13 @@ function Home() {
               </h1>
 
               <p className="home-main-description">
-                CS 기초 지식부터 실전 기술 면접까지, 당신의 개발자 커리어를 위한
-                모든 준비를 도와드립니다. 체계적인 학습과 실전형 면접
-                시뮬레이션으로 자신감을 키우세요.
+                CS 기초 지식부터 실전 기술 면접까지, <br/> 당신의 개발자 커리어를 
+                위한 모든 준비를 도와드립니다.  <br/>
+                체계적인 학습과 실전형 면접 시뮬레이션으로 자신감을 키우세요.
               </p>
 
               <div className="home-button-group">
-                <a className="home-primary-btn" href="/studyContent">
+                <a className="home-primary-btn" href="/study/major">
                   <svg xmlns="http://www.w3.org/2000/svg" className="home-btn-icon" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
                   </svg>
@@ -77,15 +77,7 @@ function Home() {
                 </a>
               </div>
 
-              <div className="home-user-stats">
-                <div className="home-avatar-group">
-                  <div className="home-avatar home-avatar-1">JH</div>
-                  <div className="home-avatar home-avatar-2">MS</div>
-                  <div className="home-avatar home-avatar-3">KJ</div>
-                  <div className="home-avatar home-avatar-4">JY</div>
-                </div>
-                <p className="home-user-count">1,000+ 개발자가 이용 중</p>
-              </div>
+              
             </div>
 
             <div className="home-visual-content">
@@ -119,7 +111,7 @@ function Home() {
             </div>
             <h3 className="home-feature-title">CS 기초 강화</h3>
             <p className="home-feature-description">
-              알고리즘, 자료구조, 네트워크 등 필수 CS 지식을 체계적으로 학습하세요.
+              알고리즘, 자료구조, 네트워크 등<br/> 필수 CS 지식을 체계적으로 학습하세요.
             </p>
           </div>
 
@@ -131,7 +123,7 @@ function Home() {
             </div>
             <h3 className="home-feature-title">실전형 면접 대비</h3>
             <p className="home-feature-description">
-              실제 기업 면접과 유사한 환경에서 모의 면접을 통해 자신감을 키우세요.
+              실제 기업 면접과 유사한 환경에서<br/>  모의 면접을 통해 자신감을 키우세요.
             </p>
           </div>
 
@@ -143,7 +135,7 @@ function Home() {
             </div>
             <h3 className="home-feature-title">맞춤형 학습 경로</h3>
             <p className="home-feature-description">
-              개인의 수준과 목표에 맞는 커스텀 학습 경로로 효율적인 공부가 가능합니다.
+              개인의 수준과 목표에 맞는 커스텀 학습<br/>  경로로 효율적인 공부가 가능합니다.
             </p>
           </div>
         </div>
