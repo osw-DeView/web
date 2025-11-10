@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import NavBar from '../components/NavBar';
-import { Menu, X, BookOpen } from 'lucide-react';
+import { Menu, X, BookOpen, ChevronDown } from 'lucide-react';
 import api from "../api"; 
 
 const MajorStudyPage = () => {
@@ -12,6 +12,7 @@ const MajorStudyPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false); // 모바일 사이드바 토글
+  const [openFirstCategory, setOpenFirstCategory] = useState(null);
 
   /** 카테고리 목록 불러오기 */
   useEffect(() => {
@@ -34,6 +35,11 @@ const MajorStudyPage = () => {
     };
     fetchCategories();
   }, []);
+
+  const toggleFirstCategory = (categoryName) => {
+    // 이미 열려 있으면 닫고 (null), 아니면 새로 연다.
+    setOpenFirstCategory(openFirstCategory === categoryName ? null : categoryName);
+  };
 
   /** 특정 챕터 내용 불러오기 */
   const fetchContent = async (first, second) => {
@@ -144,32 +150,45 @@ const MajorStudyPage = () => {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {categories.map((cat) => (
                 <div key={cat.firstCategory} className="space-y-2">
-                  <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg">
+                  <div 
+                    className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                    onClick={() => toggleFirstCategory(cat.firstCategory)}
+                  >
                     <div className="w-2 h-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
-                    <span className="font-bold text-gray-800 text-sm">
+                    <span className="font-bold text-gray-800 text-sm flex-1">
                       {cat.firstCategory}
                     </span>
+                    <span className={`transform transition-transform duration-300 ${openFirstCategory === cat.firstCategory ? 'rotate-180' : 'rotate-0'}`}>
+                        <ChevronDown 
+                            className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
+                                openFirstCategory === cat.firstCategory ? 'rotate-180' : 'rotate-0'
+                            }`}
+                        />
+                    </span>
                   </div>
-                  <ul className="ml-4 space-y-1">
-                    {cat.secondCategory.map((sec) => (
-                      <li
-                        key={sec}
-                        onClick={() => fetchContent(cat.firstCategory, sec)}
-                        className={`
-                          cursor-pointer px-4 py-2.5 rounded-lg text-sm font-medium
-                          transition-all duration-200 transform hover:scale-105
-                          ${
-                            selectedFirst === cat.firstCategory &&
-                            selectedSecond === sec
-                              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
-                              : "hover:bg-blue-50 text-gray-700 hover:text-blue-600"
-                          }
-                        `}
-                      >
-                        {sec}
-                      </li>
-                    ))}
-                  </ul>
+                  
+                  {openFirstCategory === cat.firstCategory && (
+                    <ul className="ml-4 space-y-1">
+                      {(cat.secondCategory || []).map((sec) => (
+                        <li
+                          key={sec}
+                          onClick={() => fetchContent(cat.firstCategory, sec)}
+                          className={`
+                            cursor-pointer px-4 py-2.5 rounded-lg text-sm font-medium
+                            transition-all duration-200 transform hover:scale-105
+                            ${
+                              selectedFirst === cat.firstCategory &&
+                              selectedSecond === sec
+                                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
+                                : "hover:bg-blue-50 text-gray-700 hover:text-blue-600"
+                            }
+                          `}
+                        >
+                          {sec}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               ))}
             </div>
