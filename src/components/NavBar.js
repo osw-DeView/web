@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
-import api from '../api';
-import { getCookie, deleteCookie } from '../utils/cookieUtils';
-
 
 const navigation = [
   { name: 'CS 전공지식 학습하기', href: '/study/major' },
@@ -13,158 +10,122 @@ const navigation = [
 
 function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // 데모용
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!token);
-
-  }, []);
-
-
-const handleLogout = async() => {
-    const refreshToken = getCookie('refreshToken');
-
-    const logoutPayload = { 
-        refreshToken: refreshToken 
-    };
-
-    try {
-        if (refreshToken) {
-            await api.post("/auth/logout", logoutPayload); 
-            console.log("서버 Refresh Token 삭제 성공");
-        }
-        localStorage.removeItem('accessToken'); 
-        deleteCookie('refreshToken'); 
-
-        window.location.href = '/'; 
-
-    } catch (error) {
-        console.error("로그아웃 요청 처리 중 오류 발생. 클라이언트 토큰은 삭제합니다.", error);
-        
-        localStorage.removeItem('accessToken'); 
-        deleteCookie('refreshToken');
-    }
+  const handleLogout = () => {
+    console.log('로그아웃');
+    setIsLoggedIn(false);
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
 
-          <div className="flex items-center">
-            <a href="/" className="flex items-center space-x-2 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200">
-                <span className="text-white font-bold text-sm">DV</span>
-              </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                De-View
-              </h1>
-            </a>
-          </div>
-
-          <div className="hidden lg:flex lg:items-center lg:space-x-1">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-all duration-200"
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
-
-          <div className="hidden lg:flex lg:items-center lg:space-x-3">
-            {!isLoggedIn ? (
-              <>
-                <a
-                  href="/signup"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200"
-                >
-                  회원가입
-                </a>
-                <a
-                  href="/login"
-                  className="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 shadow-sm hover:shadow-md transition-all duration-200"
-                >
-                  로그인
-                </a>
-              </>
-            ) : (
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200"
-                >
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="text-sm font-medium text-gray-700">내 계정</span>
-                </button>
-
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
-                    <a
-                      href="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      프로필
-                    </a>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      로그아웃
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* 모바일 메뉴 버튼 */}
-          <div className="flex lg:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-            >
-              <span className="sr-only">메뉴 열기</span>
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* 모바일 메뉴 */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden">
-          <div className="fixed inset-0 z-40 bg-gray-600/50 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-xl">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <a href="/home" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="flex items-center">
+              <a href="/" className="flex items-center space-x-2 group">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200">
                   <span className="text-white font-bold text-sm">DV</span>
                 </div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   De-View
                 </h1>
               </a>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-              >
-                <X className="w-6 h-6" />
-              </button>
             </div>
 
+            <div className="hidden lg:flex lg:items-center lg:space-x-1">
+              {navigation.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-all duration-200"
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+
+            <div className="hidden lg:flex lg:items-center lg:space-x-3">
+              {!isLoggedIn ? (
+                <>
+                  <a
+                    href="/signup"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200"
+                  >
+                    회원가입
+                  </a>
+                  <a
+                    href="/login"
+                    className="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 shadow-sm hover:shadow-md transition-all duration-200"
+                  >
+                    로그인
+                  </a>
+                </>
+              ) : (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200"
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                      <User className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">내 계정</span>
+                  </button>
+
+                  {showUserMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
+                      <a
+                        href="/profile"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        프로필
+                      </a>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        로그아웃
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* 모바일 메뉴 버튼 */}
+            <div className="flex lg:hidden">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+              >
+                <span className="sr-only">메뉴 열기</span>
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      {/* 모바일 메뉴 */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-40">
+          {/* 오버레이 */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+            onClick={() => setMobileMenuOpen(false)} 
+          />
+          
+          {/* 메뉴 패널 - 상단 네비바 바로 아래에 고정 */}
+          <div className="absolute top-16 inset-x-0 bg-white shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto">
             <div className="px-4 py-6 space-y-2">
               {navigation.map((item) => (
                 <a
@@ -226,7 +187,7 @@ const handleLogout = async() => {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 
