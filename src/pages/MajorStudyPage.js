@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import NavBar from '../components/NavBar';
 import { Menu, X, BookOpen, ChevronDown } from 'lucide-react';
 import api from "../api"; 
+import rehypeRaw from "rehype-raw";
 
 const MajorStudyPage = () => {
   const [categories, setCategories] = useState([]); // 전체 카테고리
@@ -253,6 +254,7 @@ const MajorStudyPage = () => {
                       </h2>
                       <div className="prose prose-lg prose-blue max-w-none text-gray-700 leading-relaxed">
                         <ReactMarkdown
+                          rehypePlugins={[rehypeRaw]}
                           components={{
                             h1: ({node, ...props}) => <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900" {...props} />,
                             h2: ({node, ...props}) => <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900" {...props} />,
@@ -264,7 +266,7 @@ const MajorStudyPage = () => {
                             code: ({node, inline, ...props}) => 
                               inline 
                                 ? <code className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-sm font-mono" {...props} />
-                                : <code className="block p-4 bg-gray-50 rounded-lg text-sm font-mono overflow-x-auto" {...props} />,
+                                : <code className="block p-4 bg-gray-50 rounded-lg text-sm text-black font-mono overflow-x-auto" {...props} />,
                             blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-4 italic bg-blue-50 rounded-r" {...props} />,
                           }}
                         >
