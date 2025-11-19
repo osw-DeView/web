@@ -7,6 +7,7 @@ import SignUp from './pages/SignupPage'
 import Login from './pages/LoginPage'
 import MajorStudyPage from './pages/MajorStudyPage'
 import StudyInterviewPage from './pages/StudyInterviewPage'
+import InterviewReview from './pages/InterviewReview'
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/study/major" element={<MajorStudyPage />} />
           <Route path="/study/interview" element={< StudyInterviewPage/>} />
+          <Route path="/study/interview/review" element={< InterviewReview/>} />
+
         </Routes>
     </Router>
   );
