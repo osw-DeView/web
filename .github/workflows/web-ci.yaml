@@ -32,7 +32,7 @@ jobs:
             ${{ runner.os }}-npm-
 
       - name: Install npm dependencies
-        run: npm ci
+        run: npm install --legacy-pee-deps
 
       # 커밋 메시지 검사 (규칙에 맞지 않으면 CI 실패)
       - name: Check commit messages
