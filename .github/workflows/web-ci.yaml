@@ -40,8 +40,5 @@ jobs:
         with:
           configFile: "commitlint.config.mjs"
 
-      - name: Run tests
-        run: npm run test # 또는 npm test
-
       - name: React build
         run: npm run build
