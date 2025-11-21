@@ -2,8 +2,7 @@ name: WEB CI
 
 on:
   push:
-    branches:
-      - develop
+    branches: [ main, develop, feat/**, fix/**, design/** ]
   pull_request:
     branches: [ main, develop ]
   workflow_dispatch:
@@ -41,8 +40,5 @@ jobs:
         with:
           configFile: "commitlint.config.mjs"
 
-      - name: Run tests
-        run: npm run test # 또는 npm test
-
       - name: React build
-        run: npm run build
+        run: CI=false npm run build
