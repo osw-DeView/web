@@ -8,6 +8,9 @@ import Login from './pages/LoginPage'
 import MajorStudyPage from './pages/MajorStudyPage'
 import StudyInterviewPage from './pages/StudyInterviewPage'
 import InterviewReview from './pages/InterviewReview'
+import InterviewStartPage from './pages/InterviewStartPage';
+import InterviewPage from './pages/InterviewPage';
+import InterviewResult from './pages/InterviewResult';
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
           <Route path="/study/major" element={<MajorStudyPage />} />
           <Route path="/study/interview" element={< StudyInterviewPage/>} />
           <Route path="/study/interview/review" element={< InterviewReview/>} />
+          <Route path="/interview/start" element={< InterviewStartPage/>} />
+          <Route path="/interview" element={< InterviewPage/>} />
+          <Route path="/interview/result" element={<InterviewResult />} />
 
         </Routes>
     </Router>
@@ -27,3 +33,4 @@ function App() {
 }
 
 export default App;
+
