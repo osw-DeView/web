@@ -12,6 +12,9 @@ import InterviewRecordPage from './pages/InterviewRecordPage'
 import InterviewRecordDetail from "./pages/InterviewRecordDetail";
 import KeywordDetail from "./pages/KeywordDetail";
 import Profile from "./pages/Profile";
+import InterviewStartPage from './pages/InterviewStartPage';
+import InterviewPage from './pages/InterviewPage';
+import InterviewResult from './pages/InterviewResult';
 
 function App() {
   return (
@@ -28,9 +31,14 @@ function App() {
           <Route path="/study/interview/record" element={< InterviewRecordPage/>} />
           <Route path="/study/interview/record/:id" element={<InterviewRecordDetail />} />
           <Route path="/study/interview/record/keyword/:name" element={<KeywordDetail />} />
+          <Route path="/interview/start" element={< InterviewStartPage/>} />
+          <Route path="/interview" element={< InterviewPage/>} />
+          <Route path="/interview/result" element={<InterviewResult />} />
+
         </Routes>
     </Router>
   );
 }
 
 export default App;
+
