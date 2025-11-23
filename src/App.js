@@ -10,7 +10,9 @@ import StudyInterviewPage from './pages/StudyInterviewPage'
 import InterviewReview from './pages/InterviewReview'
 import InterviewRecordPage from './pages/InterviewRecordPage'
 import InterviewRecordDetail from "./pages/InterviewRecordDetail";
+import KeywordDetail from "./pages/KeywordDetail";
 import Profile from "./pages/Profile";
+
 function App() {
   return (
     <Router>
@@ -25,6 +27,7 @@ function App() {
           <Route path="/study/interview/review" element={< InterviewReview/>} />
           <Route path="/study/interview/record" element={< InterviewRecordPage/>} />
           <Route path="/study/interview/record/:id" element={<InterviewRecordDetail />} />
+          <Route path="/study/interview/record/keyword/:name" element={<KeywordDetail />} />
         </Routes>
     </Router>
   );
