@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sparkles, TrendingUp, MessageSquare, Award, Home } from "lucide-react";
 import api from "../api";
@@ -13,12 +13,21 @@ const InterviewResultPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [evaluationData, setEvaluationData] = useState(null);
+  
+  const hasCalledAPI = useRef(false); // 중복 호출 방지
 
   useEffect(() => {
     if (!sessionId) {
       navigate("/interview/start");
       return;
     }
+    
+    
+    if (hasCalledAPI.current) { // 이미 API를 호출했다면 다시 호출하지 않음
+      return;
+    }
+    
+    hasCalledAPI.current = true;
     fetchEvaluation();
   }, [sessionId]);
 
@@ -39,8 +48,10 @@ const InterviewResultPage = () => {
         setError("평가 데이터 형식이 올바르지 않습니다.");
       }
     } catch (err) {
-      console.error("평가 요청 실패:", err);
+      console.error("❌ 평가 요청 실패:", err);
       setError("평가 결과를 불러오는데 실패했습니다.");
+      // 에러 발생 시 플래그 리셋 (재시도 가능하도록)
+      hasCalledAPI.current = false;
     } finally {
       setLoading(false);
     }
@@ -168,15 +179,36 @@ const InterviewResultPage = () => {
                 <h2 className="text-lg font-bold text-gray-800">개선이 필요한 부분</h2>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {evaluationData.improvement_keywords.map((keyword, index) => (
-                  <span
-                    key={index}
-                    className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium border border-purple-200"
-                  >
-                    {keyword}
-                  </span>
-                ))}
+              <div className="flex flex-wrap gap-3">
+                {evaluationData.improvement_keywords
+                  .filter((keyword) => keyword.trim() !== "")
+                  .map((keyword, index) => (
+                    <button
+                      key={index}
+                      onClick={() =>
+                        navigate(
+                          `/study/interview/record/keyword/${encodeURIComponent(keyword)}`,
+                          { state: { keyword: keyword } }
+                        )
+                      }
+                      className="
+                        group relative
+                        px-5 py-3 bg-white
+                        border-2 border-purple-300
+                        rounded-xl font-semibold cursor-pointer
+                        hover:bg-purple-600 hover:border-purple-600
+                        hover:shadow-xl hover:-translate-y-1
+                        active:scale-95
+                        transition-all duration-200
+                        flex items-center gap-2
+                      "
+                    >
+                      <span className="text-purple-700 group-hover:text-white transition-colors">
+                        {keyword}
+                      </span>
+                      <Sparkles className="w-4 h-4 text-purple-500 group-hover:text-white transition-colors" />
+                    </button>
+                  ))}
               </div>
             </div>
           )}
