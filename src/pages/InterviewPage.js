@@ -35,7 +35,6 @@ const InterviewPage = () => {
   const requestFirstQuestion = async () => {
     setLoading(true);
     try {
-      console.log("📤 첫 질문 요청:", { sessionId, interviewType });
 
       const response = await api.post("/api/interview/chat/next", {
         sessionId: sessionId,
@@ -48,8 +47,6 @@ const InterviewPage = () => {
         ],
       });
 
-      console.log("📥 첫 질문 받음:", response.data);
-
       // 초기 메시지 없이 첫 질문만 표시
       setMessages([
         {
@@ -58,7 +55,7 @@ const InterviewPage = () => {
         },
       ]);
     } catch (err) {
-      console.error("❌ 첫 질문 요청 실패:", err);
+      console.error("첫 질문 요청 실패:", err);
       setMessages([
         {
           role: "error",
@@ -112,7 +109,6 @@ const InterviewPage = () => {
 
     // 4번째 답변 완료 시 API 호출 없이 바로 종료
     if (newAnswerCount >= MAX_QUESTIONS) {
-      console.log("✅ 면접 완료! 평가 페이지로 이동");
       
       // 짧은 지연 후 완료 메시지 표시 (사용자 메시지가 먼저 렌더링되도록)
       setTimeout(() => {
@@ -146,21 +142,12 @@ const InterviewPage = () => {
         newUserMessage,
       ];
 
-      console.log("📤 메시지 전송:", {
-        sessionId,
-        interviewType,
-        messagesCount: messagesForAPI.length,
-        currentAnswerCount: newAnswerCount,
-      });
-
       // API 호출
       const response = await api.post("/api/interview/chat/next", {
         sessionId: sessionId,
         interviewType: interviewType,
         messages: messagesForAPI,
       });
-
-      console.log("📥 응답 받음:", response.data);
 
       // AI 응답 추가
       setMessages((prev) => [
@@ -171,7 +158,7 @@ const InterviewPage = () => {
         },
       ]);
     }catch(err){
-      console.error("❌ 메시지 전송 실패:", err);
+      console.error("메시지 전송 실패:", err);
 
       // 에러 메시지
       setMessages((prev) => [

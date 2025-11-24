@@ -21,8 +21,7 @@ const InterviewResultPage = () => {
       navigate("/interview/start");
       return;
     }
-    
-    
+
     if (hasCalledAPI.current) { // 이미 API를 호출했다면 다시 호출하지 않음
       return;
     }
@@ -48,7 +47,7 @@ const InterviewResultPage = () => {
         setError("평가 데이터 형식이 올바르지 않습니다.");
       }
     } catch (err) {
-      console.error("❌ 평가 요청 실패:", err);
+      console.error("평가 요청 실패:", err);
       setError("평가 결과를 불러오는데 실패했습니다.");
       // 에러 발생 시 플래그 리셋 (재시도 가능하도록)
       hasCalledAPI.current = false;
