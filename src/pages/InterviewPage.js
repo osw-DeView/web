@@ -15,8 +15,9 @@ const InterviewPage = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [answerCount, setAnswerCount] = useState(0); // 답변 카운트
+  const textareaRef = useRef(null);
 
-  const MAX_QUESTIONS = 3; // 최대 질문 개수
+  const MAX_QUESTIONS = 4; // 최대 질문 개수 (4번 답변까지 가능)
 
   useEffect(() => { // 첫 질문 바로 요청
     if(!sessionId){
@@ -73,6 +74,21 @@ const InterviewPage = () => {
     scrollToBottom();
   }, [messages]);
 
+  // textarea 높이 자동 조절
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = '48px'; // 최소 높이로 리셋
+      const scrollHeight = textarea.scrollHeight;
+      const maxHeight = 200; // 최대 높이
+      textarea.style.height = Math.min(scrollHeight, maxHeight) + 'px';
+    }
+  };
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [inputMessage]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
   };
@@ -95,7 +111,7 @@ const InterviewPage = () => {
     setAnswerCount(newAnswerCount);
 
     // 4번째 답변 완료 시 API 호출 없이 바로 종료
-    if (newAnswerCount > MAX_QUESTIONS) {
+    if (newAnswerCount >= MAX_QUESTIONS) {
       console.log("✅ 면접 완료! 평가 페이지로 이동");
       
       // 짧은 지연 후 완료 메시지 표시 (사용자 메시지가 먼저 렌더링되도록)
@@ -268,7 +284,7 @@ const InterviewPage = () => {
           )}
 
           {/* 면접 완료 메시지 */}
-          {answerCount > MAX_QUESTIONS && !loading && (
+          {answerCount >= MAX_QUESTIONS && !loading && (
             <div className="flex justify-center">
               <div className="bg-green-900/50 border border-green-500/50 rounded-2xl px-6 py-4 text-center">
                 <p className="text-green-200 text-base font-semibold mb-2">
@@ -290,18 +306,18 @@ const InterviewPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-end space-x-3">
             <textarea
+              ref={textareaRef}
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={answerCount > MAX_QUESTIONS ? "면접이 종료되었습니다..." : "답변을 입력하세요..."}
-              disabled={loading || answerCount > MAX_QUESTIONS}
-              rows="1"
-              className="flex-1 bg-slate-800/80 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ minHeight: "48px", maxHeight: "120px" }}
+              placeholder={answerCount >= MAX_QUESTIONS ? "면접이 종료되었습니다..." : "답변을 입력하세요..."}
+              disabled={loading || answerCount >= MAX_QUESTIONS}
+              className="flex-1 bg-slate-800/80 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none disabled:opacity-50 disabled:cursor-not-allowed [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              style={{ minHeight: "48px", maxHeight: "200px", height: "48px", overflow: "hidden" }}
             />
             <button
               onClick={sendMessage}
-              disabled={loading || !inputMessage.trim() || answerCount > MAX_QUESTIONS}
+              disabled={loading || !inputMessage.trim() || answerCount >= MAX_QUESTIONS}
               className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-slate-700 disabled:to-slate-700 rounded-xl flex items-center justify-center transition-all duration-200 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5 text-white" />
@@ -310,7 +326,7 @@ const InterviewPage = () => {
 
           {/* 안내 메시지 */}
           <p className="text-xs text-slate-400 mt-2 text-center">
-            {answerCount > MAX_QUESTIONS 
+            {answerCount >= MAX_QUESTIONS 
               ? "💡 면접이 완료되었습니다"
               : "💡 Enter로 전송 • Shift + Enter로 줄바꿈"
             }

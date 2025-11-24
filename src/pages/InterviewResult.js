@@ -27,13 +27,10 @@ const InterviewResultPage = () => {
     setError(null);
 
     try {
-      console.log("📤 평가 요청:", { sessionId });
 
       const response = await api.post("/api/interview/chat/evaluation", {
         sessionId: sessionId,
       });
-
-      console.log("📥 평가 받음:", response.data);
       
       // API 응답 구조: { evaluation_report: { ... } }
       if (response.data && response.data.evaluation_report) {
@@ -42,7 +39,7 @@ const InterviewResultPage = () => {
         setError("평가 데이터 형식이 올바르지 않습니다.");
       }
     } catch (err) {
-      console.error("❌ 평가 요청 실패:", err);
+      console.error("평가 요청 실패:", err);
       setError("평가 결과를 불러오는데 실패했습니다.");
     } finally {
       setLoading(false);
@@ -85,7 +82,6 @@ const InterviewResultPage = () => {
         <NavBar />
         <div className="flex items-center justify-center flex-1 p-4">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-red-200 p-8 text-center">
-            <div className="text-5xl mb-4">😢</div>
             <h2 className="text-xl font-bold text-gray-800 mb-2">오류 발생</h2>
             <p className="text-gray-600 mb-6">{error}</p>
             <button

@@ -7,60 +7,54 @@ import Footer from "../components/Footer";
 
 const InterviewStartPage = () => {
   const navigate = useNavigate();
-  const [interviewType, setInterviewType] = useState(""); // 인터뷰 타입
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
   const startInterview = async () => {
-    if(!interviewType){
-      setError("면접 유형을 선택해주세요!");
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
-    try{
+    try {
       const res = await api.post("api/interview/chat/start", {
-        interviewType: interviewType
+        interviewType: "cs"
       });
 
       console.log(res.data);
 
-      if(res.data && res.data.sessionId){
+      if (res.data && res.data.sessionId) {
         navigate("/interview", {
           state: {
             sessionId: res.data.sessionId,
-            interviewType: interviewType,
+            interviewType: "cs",
             initialMessage: res.data.response,
           },
         });
-      }else{
+      } else {
         setError("서버 응답이 올바르지 않습니다.");
       }
 
-    }catch(err){
+    } catch (err) {
       console.error("API 호출 실패:", err);
 
-      if(err.response){ // 서버가 응답을 반환한 경우
+      if (err.response) {
         setError(
           err.response.data?.message || 
           `서버 오류가 발생했습니다. (${err.response.status})`
         );
-      }else if(err.request){ // 요청이 전송되었지만 응답이 없는 경우
+      } else if (err.request) {
         setError("서버에 연결할 수 없습니다. 네트워크를 확인해주세요.");
-      }else{ // 요청 설정 중 오류가 발생한 경우
+      } else {
         setError("요청 중 오류가 발생했습니다.");
       }
+    } finally {
+      setLoading(false);
     }
+  };
 
-  }
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <NavBar />
       <div className="flex items-center justify-center flex-1 p-4 md:p-8 pt-24 md:pt-28">
-
         <div className="max-w-2xl w-full space-y-6">
 
           {/* 헤더 카드 */}
@@ -78,69 +72,38 @@ const InterviewStartPage = () => {
               기술 면접을 담당하는 AI 면접관입니다.
             </p>
             <p className="text-gray-600 text-base md:text-lg">
-              아래에서 AI 인터뷰 주제를 선택해주세요.
+              준비가 되셨다면 아래 버튼을 눌러 면접을 시작하세요.
             </p>
           </div>
 
-          {/* 면접 유형 선택 카드 */}
+          {/* 면접 안내 카드 */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
             <div className="flex items-center space-x-3 mb-6">
               <div className="p-2 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-lg font-bold text-gray-800">면접 유형 선택</h2>
+              <h2 className="text-lg font-bold text-gray-800">CS 기술 면접</h2>
             </div>
 
-            {/* 🔍 개발 모드 디버깅 정보
-            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg text-xs">
-              <p className="text-gray-600 mb-1">🔍 현재 상태</p>
-              <div className="space-y-1 text-gray-700">
-                <p>• 선택된 타입: <span className="font-semibold text-blue-600">{interviewType}</span></p>
-                <p>• 로딩: <span className="font-semibold">{loading ? '진행 중' : '대기'}</span></p>
-                <p className="text-xs text-gray-500 mt-2">
-                  💡 콘솔(F12)에서 API 요청/응답을 확인하세요
+            <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+              <div className="space-y-2 text-gray-600">
+                <p className="flex items-center">
+                  <span className="text-blue-600 mr-2">✓</span>
+                  자료구조 & 알고리즘
+                </p>
+                <p className="flex items-center">
+                  <span className="text-blue-600 mr-2">✓</span>
+                  운영체제 & 네트워크
+                </p>
+                <p className="flex items-center">
+                  <span className="text-blue-600 mr-2">✓</span>
+                  데이터베이스
+                </p>
+                <p className="flex items-center">
+                  <span className="text-blue-600 mr-2">✓</span>
+                  기타 CS 기초 지식
                 </p>
               </div>
-            </div> */}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <button
-                onClick={() => setInterviewType('cs')}
-                disabled={loading}
-                className={`
-                  p-6 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02]
-                  ${interviewType === 'cs'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
-                    : 'bg-gray-50 hover:bg-blue-50 text-gray-700 border-2 border-gray-200 hover:border-blue-300'
-                  }
-                  ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                `}
-              >
-                <div className="text-2xl mb-2">💻</div>
-                <h3 className="text-lg font-bold mb-1">CS 지식 면접</h3>
-                <p className={`text-sm ${interviewType === 'cs' ? 'text-blue-100' : 'text-gray-500'}`}>
-                  자료구조, 알고리즘, 네트워크 등
-                </p>
-              </button>
-
-              <button
-                onClick={() => setInterviewType('project')}
-                disabled={loading}
-                className={`
-                  p-6 rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02]
-                  ${interviewType === 'project'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
-                    : 'bg-gray-50 hover:bg-blue-50 text-gray-700 border-2 border-gray-200 hover:border-blue-300'
-                  }
-                  ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                `}
-              >
-                <div className="text-2xl mb-2">🚀</div>
-                <h3 className="text-lg font-bold mb-1">프로젝트 경험 면접</h3>
-                <p className={`text-sm ${interviewType === 'project' ? 'text-blue-100' : 'text-gray-500'}`}>
-                  개발 경험 및 프로젝트 설명
-                </p>
-              </button>
             </div>
 
             {/* 에러 메시지 */}
@@ -168,7 +131,7 @@ const InterviewStartPage = () => {
                   면접 시작 준비 중...
                 </span>
               ) : (
-                `🚀 ${interviewType === 'cs' ? 'CS 면접' : '프로젝트 면접'} 시작하기`
+                'CS 면접 시작하기'
               )}
             </button>
           </div>
