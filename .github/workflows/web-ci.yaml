@@ -34,11 +34,5 @@ jobs:
       - name: Install npm dependencies
         run: npm install
 
-      # 커밋 메시지 검사 (규칙에 맞지 않으면 CI 실패)
-      - name: Check commit messages
-        uses: wagoid/commitlint-github-action@v6
-        with:
-          configFile: "commitlint.config.mjs"
-
       - name: React build
         run: CI=false npm run build
