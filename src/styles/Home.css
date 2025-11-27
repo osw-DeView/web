@@ -1,0 +1,448 @@
+/* ========================================
+   홈페이지 전체 레이아웃
+   ======================================== */
+.home-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ========================================
+   헤더 섹션
+   ======================================== */
+.home-header-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 배경 애니메이션 효과 */
+.home-bg-orbs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.home-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(60px);
+  animation: float 20s ease-in-out infinite;
+}
+
+.home-bg-orb-1 {
+  width: 500px;
+  height: 500px;
+  top: -100px;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.home-bg-orb-2 {
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  right: -150px;
+  animation-delay: 5s;
+}
+
+.home-bg-orb-3 {
+  width: 350px;
+  height: 350px;
+  bottom: -100px;
+  left: 30%;
+  animation-delay: 10s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 30px) scale(0.9);
+  }
+}
+
+/* 코드 파티클 애니메이션 */
+.home-code-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.home-code-particle {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.15);
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  animation: drift 15s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   컨텐츠 영역
+   ======================================== */
+.home-content-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  padding: 80px 20px 60px;
+}
+
+.home-content-grid {
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* 텍스트 컨텐츠 */
+.home-text-content {
+  color: white;
+}
+
+.home-main-title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.home-subtitle-block {
+  display: block;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 10px;
+  background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-main-description {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin: 30px 0;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 540px;
+}
+
+/* 버튼 그룹 */
+.home-button-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.home-primary-btn,
+.home-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.home-primary-btn {
+  background: white;
+  color: #667eea;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.home-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.home-secondary-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.home-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.home-btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ========================================
+   비주얼 컨텐츠 (플로팅 카드)
+   ======================================== */
+.home-visual-content {
+  position: relative;
+  height: 400px;
+}
+
+.home-floating-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.home-floating-card-1 {
+  top: 50px;
+  left: 50px;
+  animation: float-card 6s ease-in-out infinite;
+}
+
+.home-floating-card-2 {
+  bottom: 50px;
+  right: 50px;
+  animation: float-card 6s ease-in-out infinite 3s;
+}
+
+@keyframes float-card {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.home-card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-card-icon-success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.home-card-icon-idea {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.home-icon {
+  width: 32px;
+  height: 32px;
+  color: white;
+  stroke-width: 2.5;
+}
+
+/* ========================================
+   바디 섹션 (특징 카드)
+   ======================================== */
+.home-body-section {
+  background: white;
+  padding: 100px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.home-features-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+}
+
+.home-feature-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.home-feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+}
+
+.home-feature-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.home-feature-icon-indigo {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.home-feature-icon-purple {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.home-feature-icon-blue {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.home-feature-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 16px 0;
+}
+
+.home-feature-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #718096;
+  margin: 0;
+}
+
+/* ========================================
+   푸터 섹션
+   ======================================== */
+.home-footer-section {
+  background: #1a202c;
+}
+
+/* ========================================
+   반응형 디자인
+   ======================================== */
+@media (max-width: 968px) {
+  .home-content-grid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+    text-align: center;
+  }
+
+  .home-main-title {
+    font-size: 3rem;
+  }
+
+  .home-subtitle-block {
+    font-size: 1.5rem;
+  }
+
+  .home-main-description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-button-group {
+    justify-content: center;
+  }
+
+  .home-visual-content {
+    display: none;
+  }
+
+  .home-bg-orb-1,
+  .home-bg-orb-2 {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-main-title {
+    font-size: 2.5rem;
+  }
+
+  .home-subtitle-block {
+    font-size: 1.25rem;
+  }
+
+  .home-main-description {
+    font-size: 1rem;
+  }
+
+  .home-button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .home-primary-btn,
+  .home-secondary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .home-body-section {
+    padding: 60px 20px;
+  }
+
+  .home-features-grid {
+    gap: 30px;
+  }
+
+  .home-feature-card {
+    padding: 30px 20px;
+  }
+
+  .home-code-particle {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-content-container {
+    padding: 60px 15px 40px;
+  }
+
+  .home-main-title {
+    font-size: 2rem;
+  }
+
+  .home-subtitle-block {
+    font-size: 1.125rem;
+  }
+}

@@ -1,0 +1,22 @@
+services:
+  web:
+    restart: always
+    container_name: deview-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - /usr/src/app/node_modules
+      #현재 디렉토리에 있는 모든 파일들을 usr/src/app에서 참조
+      - ./:/usr/src/app 
+    stdin_open: true
+    networks:
+      - deview-network
+
+networks:
+  # 기존에 생성된 외부 네트워크를 참조
+  deview-network:
+    name: deview-network
+    external: true
