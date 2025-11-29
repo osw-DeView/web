@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 const InterviewResultPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { sessionId, interviewType } = location.state || {};
+  const { sessionId, interviewType, messages } = location.state || {};
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,30 +17,28 @@ const InterviewResultPage = () => {
   const hasCalledAPI = useRef(false); // 중복 호출 방지
 
   useEffect(() => {
-    if (!sessionId) {
+    if (!sessionId || !messages) {
       navigate("/interview/start");
       return;
     }
 
-    if (hasCalledAPI.current) { // 이미 API를 호출했다면 다시 호출하지 않음
+    if (hasCalledAPI.current) { 
       return;
     }
     
     hasCalledAPI.current = true;
     fetchEvaluation();
-  }, [sessionId]);
+  }, [sessionId, interviewType, messages, navigate]);
 
   const fetchEvaluation = async () => {
     setLoading(true);
     setError(null);
 
     try {
-
       const response = await api.post("/api/interview/chat/evaluation", {
-        sessionId: sessionId,
+        sessionId: sessionId
       });
-      
-      // API 응답 구조: { evaluation_report: { ... } }
+
       if (response.data && response.data.evaluation_report) {
         setEvaluationData(response.data.evaluation_report);
       } else {
@@ -49,7 +47,6 @@ const InterviewResultPage = () => {
     } catch (err) {
       console.error("평가 요청 실패:", err);
       setError("평가 결과를 불러오는데 실패했습니다.");
-      // 에러 발생 시 플래그 리셋 (재시도 가능하도록)
       hasCalledAPI.current = false;
     } finally {
       setLoading(false);

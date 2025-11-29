@@ -15,7 +15,8 @@ import InterviewRecordPage from './pages/InterviewRecordPage'
 import InterviewRecordDetail from "./pages/InterviewRecordDetail";
 import KeywordDetail from "./pages/KeywordDetail";
 import Profile from "./pages/Profile";
-
+import BestAnswersPage from "./pages/BestAnswersPage";
+import AllLogout from './pages/AllLogout';
 function App() {
   return (
     <Router>
@@ -34,7 +35,8 @@ function App() {
           <Route path="/study/interview/record" element={< InterviewRecordPage/>} />
           <Route path="/study/interview/record/:id" element={<InterviewRecordDetail />} />
           <Route path="/study/interview/record/keyword/:name" element={<KeywordDetail />} />
-
+          <Route path="/interview/best-qna" element={<BestAnswersPage />} /> 
+          <Route path="/allLogout" element={<AllLogout />}/>
         </Routes>
     </Router>
   );
