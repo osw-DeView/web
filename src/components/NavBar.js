@@ -14,9 +14,9 @@ const navigation = [
   {
     name: '면접 연습',
     items: [
-      { name: '면접 시작하기', href: '/interview/start' },
-      { name: '면접 기록 보기', href: '/study/interview/record' },
-      { name: '베스트 답변', href: '/interview/best-qna' },
+      { name: '실전 CS 기술 면접', href: '/interview/start' },
+      { name: '나의 면접 기록', href: '/study/interview/record' },
+      { name: '우수 면접 답변', href: '/interview/best-qna' },
     ]
   },
   {
