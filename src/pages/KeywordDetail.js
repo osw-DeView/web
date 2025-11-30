@@ -35,14 +35,14 @@ function KeywordDetail() {
       <div className="home-bg-orbs">
         <div className="home-bg-orb home-bg-orb-1" />
         <div className="home-bg-orb home-bg-orb-2" />
-        <div className="home-bg-orb home-bg-orb-3" />
+        {/* <div className="home-bg-orb home-bg-orb-3" /> */}
       </div>
 
       <div className="pt-32 pb-20 px-6 max-w-5xl mx-auto relative z-10">
         
         <button
             className="mb-4 text-blue-600 font-semibold hover:underline"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/study/interview/record")}
           >
             ← 뒤로가기
           </button>
@@ -99,7 +99,9 @@ function KeywordDetail() {
         </div>
       </div>
 
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -248,13 +248,19 @@ const InterviewResultPage = () => {
           {/* 하단 버튼 */}
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() => navigate("/interview/start")}
+              onClick={() => {
+                window.scrollTo(0, 0);
+                navigate("/interview/start")
+              }}
               className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl text-lg font-bold transition-all shadow-md hover:shadow-lg transform hover:scale-[1.02]"
             >
               🔄 다시 면접 보기
             </button>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                window.scrollTo(0, 0);
+                navigate("/")
+              }}
               className="flex-1 py-4 bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 rounded-xl text-lg font-bold transition-all flex items-center justify-center space-x-2"
             >
               <Home className="w-5 h-5" />
