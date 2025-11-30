@@ -7,78 +7,47 @@ import { Send, Sparkles } from "lucide-react";
 const InterviewPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const messagesEndRef = useRef(null); 
+  const messagesEndRef = useRef(null);
 
   const { sessionId, interviewType, initialMessage } = location.state || {};
 
-  const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [answerCount, setAnswerCount] = useState(0); // 답변 카운트
-  const textareaRef = useRef(null);
-
-  const MAX_QUESTIONS = 4; // 최대 질문 개수 (4번 답변까지 가능)
-
-  useEffect(() => { // 첫 질문 바로 요청
-    if(!sessionId){
-      navigate("/interview/start");
-      return;
-    }
-
-    // 페이지 로드되자마자 첫 질문 바로 요청
-    if(initialMessage){
-      requestFirstQuestion();
-    }
-  }, [sessionId, initialMessage, navigate]);
-
-  // 첫 질문 자동 요청 (초기 인사 메시지 포함)
-  const requestFirstQuestion = async () => {
-    setLoading(true);
-    try {
-
-      const response = await api.post("/api/interview/chat/next", {
-        sessionId: sessionId,
-        interviewType: interviewType,
-        messages: [
-          {
-            role: "assistant",
-            content: initialMessage,
-          },
-        ],
-      });
-
-      // 초기 메시지 없이 첫 질문만 표시
-      setMessages([
-        {
-          role: "assistant",
-          content: response.data.response,
-        },
-      ]);
-    } catch (err) {
-      console.error("첫 질문 요청 실패:", err);
-      setMessages([
-        {
-          role: "error",
-          content: "질문을 불러오는데 실패했습니다. 페이지를 새로고침해주세요.",
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+  // HTML 엔티티 디코더
+  const decodeHTMLEntities = (text) => {
+    if (!text) return "";
+    const textarea = document.createElement("textarea");
+    textarea.innerHTML = text;
+    return textarea.value;
   };
 
-  useEffect(() =>{ // 메시지 전송 시 스크롤
+  const [messages, setMessages] = useState(() => {
+    if (!initialMessage) return [];
+    return [{ role: "assistant", content: decodeHTMLEntities(initialMessage) }];
+  });
+
+  const [inputMessage, setInputMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [answerCount, setAnswerCount] = useState(0);
+  const textareaRef = useRef(null);
+
+  const MAX_QUESTIONS = 4;
+
+  useEffect(() => {
+    if (!sessionId) {
+      navigate("/interview/start");
+    }
+  }, [sessionId, navigate]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // textarea 높이 자동 조절
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
-      textarea.style.height = '48px'; // 최소 높이로 리셋
+      textarea.style.height = "48px";
       const scrollHeight = textarea.scrollHeight;
-      const maxHeight = 200; // 최대 높이
-      textarea.style.height = Math.min(scrollHeight, maxHeight) + 'px';
+      const maxHeight = 200;
+      textarea.style.height = Math.min(scrollHeight, maxHeight) + "px";
     }
   };
 
@@ -87,13 +56,18 @@ const InterviewPage = () => {
   }, [inputMessage]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const sendMessage = async () => {
-    if(!inputMessage.trim() || loading) return;
+    if (!inputMessage.trim() || loading) return;
 
-    const userMessage = inputMessage.trim();
+    // 줄바꿈 제거한 메시지
+    const userMessage = inputMessage
+      .trim()
+      .replace(/\\n/g, " ")
+      .replace(/\n/g, " ");
+
     setInputMessage("");
 
     const newUserMessage = {
@@ -101,66 +75,49 @@ const InterviewPage = () => {
       content: userMessage,
     };
 
-    setMessages((prev) => [...prev, newUserMessage]);
-    
-    // 답변 카운트 증가 (사용자가 답변을 보낼 때마다)
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
+
     const newAnswerCount = answerCount + 1;
     setAnswerCount(newAnswerCount);
-
-    // 4번째 답변 완료 시 API 호출 없이 바로 종료
-    if (newAnswerCount >= MAX_QUESTIONS) {
-      
-      // 짧은 지연 후 완료 메시지 표시 (사용자 메시지가 먼저 렌더링되도록)
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "면접이 종료되었습니다. 수고하셨습니다!",
-          },
-        ]);
-      }, 100);
-      
-      // 2초 후 자동으로 평가 페이지로 이동
-      setTimeout(() => {
-        navigate("/interview/result", {
-          state: { sessionId, interviewType },
-        });
-      }, 2500);
-      return;
-    }
-
     setLoading(true);
 
     try {
-      // API 호출용 messages 배열 생성 (현재 대화 이력 포함)
-      const messagesForAPI = [
-        ...messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
-        newUserMessage,
-      ];
+      const messagesForAPI = updatedMessages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
 
-      // API 호출
       const response = await api.post("/api/interview/chat/next", {
         sessionId: sessionId,
         interviewType: interviewType,
         messages: messagesForAPI,
       });
 
-      // AI 응답 추가
+      // 최대 답변 수 도달 시
+      if (newAnswerCount >= MAX_QUESTIONS) {
+        navigate("/interview/result", {
+          state: { sessionId, interviewType, messages: updatedMessages },
+        });
+        return;
+      }
+
+      // AI 응답 줄바꿈/엔티티 처리
+      const cleanAIResponse = decodeHTMLEntities(
+        response.data.response
+          ?.replace(/\\n/g, " ")
+          ?.replace(/\n/g, " ")
+      );
+
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: response.data.response,
+          content: cleanAIResponse,
         },
       ]);
-    }catch(err){
+    } catch (err) {
       console.error("메시지 전송 실패:", err);
-
-      // 에러 메시지
       setMessages((prev) => [
         ...prev,
         {
@@ -168,12 +125,14 @@ const InterviewPage = () => {
           content: "메시지 전송에 실패했습니다. 다시 시도해주세요.",
         },
       ]);
-    }finally{
-      setLoading(false);
+    } finally {
+      if (newAnswerCount < MAX_QUESTIONS) {
+        setLoading(false);
+      }
     }
   };
 
-  // Enter 키 전송
+  // Enter 전송
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -181,11 +140,10 @@ const InterviewPage = () => {
     }
   };
 
-  // 면접 종료
   const endInterview = () => {
     if (window.confirm("면접을 종료하시겠습니까?")) {
       navigate("/interview/result", {
-        state: { sessionId, interviewType },
+        state: { sessionId, interviewType, messages },
       });
     }
   };
@@ -225,7 +183,9 @@ const InterviewPage = () => {
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              className={`flex ${
+                msg.role === "user" ? "justify-end" : "justify-start"
+              }`}
             >
               {msg.role === "assistant" && (
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center mr-3">
@@ -243,7 +203,7 @@ const InterviewPage = () => {
                 }`}
               >
                 <p className="text-base leading-relaxed whitespace-pre-wrap">
-                  {msg.content}
+                  {decodeHTMLEntities(msg.content)}
                 </p>
               </div>
 
@@ -270,7 +230,6 @@ const InterviewPage = () => {
             </div>
           )}
 
-          {/* 면접 완료 메시지 */}
           {answerCount >= MAX_QUESTIONS && !loading && (
             <div className="flex justify-center">
               <div className="bg-green-900/50 border border-green-500/50 rounded-2xl px-6 py-4 text-center">
@@ -297,31 +256,40 @@ const InterviewPage = () => {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={answerCount >= MAX_QUESTIONS ? "면접이 종료되었습니다..." : "답변을 입력하세요..."}
+              placeholder={
+                answerCount >= MAX_QUESTIONS
+                  ? "면접이 종료되었습니다..."
+                  : "답변을 입력하세요..."
+              }
               disabled={loading || answerCount >= MAX_QUESTIONS}
               className="flex-1 bg-slate-800/80 border border-slate-600/50 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none disabled:opacity-50 disabled:cursor-not-allowed [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-              style={{ minHeight: "48px", maxHeight: "200px", height: "48px", overflow: "hidden" }}
+              style={{
+                minHeight: "48px",
+                maxHeight: "200px",
+                height: "48px",
+                overflow: "hidden",
+              }}
             />
             <button
               onClick={sendMessage}
-              disabled={loading || !inputMessage.trim() || answerCount >= MAX_QUESTIONS}
+              disabled={
+                loading || !inputMessage.trim() || answerCount >= MAX_QUESTIONS
+              }
               className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-slate-700 disabled:to-slate-700 rounded-xl flex items-center justify-center transition-all duration-200 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5 text-white" />
             </button>
           </div>
 
-          {/* 안내 메시지 */}
           <p className="text-xs text-slate-400 mt-2 text-center">
-            {answerCount >= MAX_QUESTIONS 
+            {answerCount >= MAX_QUESTIONS
               ? "💡 면접이 완료되었습니다"
-              : "💡 Enter로 전송 • Shift + Enter로 줄바꿈"
-            }
+              : "💡 Enter로 전송 • Shift + Enter로 줄바꿈"}
           </p>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default InterviewPage;

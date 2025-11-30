@@ -1,221 +1,298 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, User, LogOut } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X, User, LogOut, ChevronDown } from 'lucide-react';
 import api from '../api';
 import { getCookie, deleteCookie } from '../utils/cookieUtils';
 
 const navigation = [
-  { name: 'CS 전공지식 학습하기', href: '/study/major' },
-  { name: '예상 면접 질문 학습하기', href: '/study/interview' },
-  { name: '기술 면접 대비하기', href: '/interview/start' },
-  { name: '면접 경험 후기', href: '/study/interview/review' },
+  {
+    name: '학습하기',
+    items: [
+      { name: 'CS 전공지식', href: '/study/major' },
+      { name: '예상 면접 질문', href: '/study/interview' },
+    ]
+  },
+  {
+    name: '면접 연습',
+    items: [
+      { name: '실전 CS 기술 면접', href: '/interview/start' },
+      { name: '나의 면접 기록', href: '/study/interview/record' },
+      { name: '우수 면접 답변', href: '/interview/best-qna' },
+    ]
+  },
+  {
+    name: '면접 경험 후기',
+    href: '/study/interview/review'
+  }
 ];
 
 function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRefs = useRef({});
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     setIsLoggedIn(!!token);
-
   }, []);
 
-
-const handleLogout = async() => {
-    const refreshToken = getCookie('refreshToken');
-
-    const logoutPayload = { 
-        refreshToken: refreshToken 
-    };
-
-    try {
-        if (refreshToken) {
-            await api.post("/auth/logout", logoutPayload); 
-            console.log("서버 Refresh Token 삭제 성공");
+  // 외부 클릭 감지
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (openDropdown !== null) {
+        const ref = dropdownRefs.current[openDropdown];
+        if (ref && !ref.contains(event.target)) {
+          setOpenDropdown(null);
         }
-        localStorage.removeItem('accessToken'); 
-        deleteCookie('refreshToken'); 
+      }
+      const userMenuRef = document.getElementById('user-menu-container');
+      if (showUserMenu && userMenuRef && !userMenuRef.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    }
 
-        window.location.href = '/'; 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openDropdown, showUserMenu]);
 
-    } catch (error) {
-        console.error("로그아웃 요청 처리 중 오류 발생. 클라이언트 토큰은 삭제합니다.", error);
-        
-        localStorage.removeItem('accessToken'); 
-        deleteCookie('refreshToken');
+  const handleLogout = async() => {
+    const refreshToken = getCookie('refreshToken');
+    try {
+      if (refreshToken) {
+        await api.post("/auth/logout", { refreshToken }); 
+      }
+      localStorage.removeItem('accessToken'); 
+      deleteCookie('refreshToken'); 
+      window.location.href = '/'; 
+    } catch {
+      localStorage.removeItem('accessToken'); 
+      deleteCookie('refreshToken');
     }
   };
 
   return (
-<>
-<header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <>
+      <header className="
+        fixed top-0 left-0 right-0 z-50
+        bg-white/30 backdrop-blur-xl 
+        border-b border-white/40
+        shadow-[0_4px_30px_rgba(0,0,0,0.05)]
+        animate-fadeInSlow
+      ">
+        <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
 
-          <div className="flex items-center">
-            <a href="/" className="flex items-center space-x-2 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200">
-                <span className="text-white font-bold text-sm">DV</span>
-              </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                De-View
-              </h1>
-            </a>
-          </div>
-
-          <div className="hidden lg:flex lg:items-center lg:space-x-1">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-all duration-200"
-              >
-                {item.name}
+            {/* 로고 */}
+            <div className="flex items-center">
+              <a href="/" className="flex items-center space-x-2 group">
+                <div className="
+                  w-9 h-9 
+                  bg-gradient-to-br from-blue-600 to-purple-600 
+                  rounded-xl flex items-center justify-center
+                  shadow-lg shadow-purple-300/40
+                  group-hover:scale-110 transition-transform duration-200
+                ">
+                  <span className="text-white font-bold text-sm">DV</span>
+                </div>
+                <h1 className="
+                  text-2xl font-extrabold 
+                  bg-gradient-to-r from-blue-600 to-purple-600 
+                  bg-clip-text text-transparent
+                  drop-shadow-sm
+                ">
+                  De-View
+                </h1>
               </a>
-            ))}
-          </div>
+            </div>
 
-          <div className="hidden lg:flex lg:items-center lg:space-x-3">
-            {!isLoggedIn ? (
-              <>
-                <a
-                  href="/signup"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200"
-                >
-                  회원가입
-                </a>
-                <a
-                  href="/login"
-                  className="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 shadow-sm hover:shadow-md transition-all duration-200"
-                >
-                  로그인
-                </a>
-              </>
-            ) : (
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200"
-                >
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="text-sm font-medium text-gray-700">내 계정</span>
-                </button>
-
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
-                    <a
-                      href="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      프로필
-                    </a>
+            {/* 데스크톱 메뉴 */}
+            <div className="hidden lg:flex lg:items-center lg:space-x-4">
+              {navigation.map((item, index) => (
+                
+                item.items ? (
+                  <div 
+                    key={item.name} 
+                    className="relative"
+                    ref={el => dropdownRefs.current[index] = el}
+                  >
                     <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      onClick={() => setOpenDropdown(openDropdown === index ? null : index)}
+                      className="
+                        flex items-center px-4 py-2
+                        text-sm font-semibold text-gray-700
+                        rounded-lg
+                        hover:bg-white/60
+                        hover:shadow-md
+                        transition-all duration-200
+                      "
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      로그아웃
+                      {item.name}
+                      <ChevronDown
+                        className={`ml-1 w-4 h-4 transition-transform ${
+                          openDropdown === index ? 'rotate-180' : ''
+                        }`}
+                      />
                     </button>
+
+                    {openDropdown === index && (
+                      <div className="
+                        absolute top-full left-0 mt-2
+                        w-56 bg-white rounded-xl shadow-xl 
+                        border border-gray-100
+                        py-2 z-50
+                        animate-dropdown
+                      ">
+                        {item.items.map((subItem, subIndex) => (
+                          <a
+                            key={subItem.name}
+                            href={subItem.href}
+                            onClick={() => setOpenDropdown(null)}
+                            className="
+                              block px-4 py-2.5 text-sm text-gray-700
+                              hover:bg-gradient-to-r 
+                              hover:from-blue-50 hover:to-purple-50
+                              hover:text-gray-900
+                              hover:translate-x-1
+                              transition-all duration-200
+                            "
+                            style={{
+                              animationDelay: `${subIndex * 40}ms`
+                            }}
+                          >
+                            {subItem.name}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+                ) : (
+                  
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="
+                      px-4 py-2 text-sm font-semibold text-gray-700
+                      hover:bg-white/60 hover:shadow-md
+                      rounded-lg transition-all duration-200
+                    "
+                  >
+                    {item.name}
+                  </a>
+                )
 
-          {/* 모바일 메뉴 버튼 */}
-          <div className="flex lg:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-            >
-              <span className="sr-only">메뉴 열기</span>
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-        </div>
-      </nav>
-      </header>
-
-      {/* 모바일 메뉴 */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
-          {/* 오버레이 */}
-          <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
-                onClick={() => setMobileMenuOpen(false)}
-          />
-          
-          {/* 메뉴 패널 - 상단 네비바 바로 아래에 고정 */}
-          <div className="absolute top-16 inset-x-0 bg-white shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto">
-            <div className="px-4 py-6 space-y-2">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="block px-4 py-3 text-base font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </a>
               ))}
             </div>
 
-            <div className="border-t border-gray-200 px-4 py-6">
+            {/* 로그인 메뉴 */}
+            <div className="hidden lg:flex lg:items-center lg:space-x-3">
               {!isLoggedIn ? (
-                <div className="space-y-2">
+                <>
                   <a
                     href="/signup"
-                    className="block w-full px-4 py-3 text-center text-base font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
-                    onClick={() => setMobileMenuOpen(false)}
+                    className="
+                      px-4 py-2 text-sm font-semibold text-gray-700 
+                      hover:text-gray-900 hover:bg-white/60
+                      rounded-lg transition duration-200
+                    "
                   >
                     회원가입
                   </a>
                   <a
                     href="/login"
-                    className="block w-full px-4 py-3 text-center text-base font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
-                    onClick={() => setMobileMenuOpen(false)}
+                    className="
+                      px-5 py-2 text-sm font-semibold text-white 
+                      bg-gradient-to-r from-blue-600 to-purple-600
+                      rounded-lg shadow-lg shadow-purple-300/30
+                      hover:shadow-purple-400/50
+                      hover:from-blue-700 hover:to-purple-700
+                      transition-all duration-200
+                    "
                   >
                     로그인
                   </a>
-                </div>
+                </>
               ) : (
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                      <User className="w-6 h-6 text-white" />
-                    </div>
-                    <span className="text-base font-medium text-gray-900">내 계정</span>
-                  </div>
-                  <a
-                    href="/profile"
-                    className="block w-full px-4 py-3 text-base font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    프로필
-                  </a>
+                <div className="relative" id="user-menu-container">
                   <button
-                    onClick={() => {
-                      handleLogout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full px-4 py-3 text-base font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200"
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="
+                      flex items-center space-x-2 px-3 py-2
+                      rounded-lg hover:bg-white/60 transition-all duration-200
+                    "
                   >
-                    로그아웃
+                    <div className="
+                      w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 
+                      rounded-full flex items-center justify-center
+                      shadow-md shadow-purple-300/40
+                    ">
+                      <User className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">내 계정</span>
                   </button>
+
+                  {showUserMenu && (
+                    <div className="
+                      absolute right-0 mt-2 
+                      w-48 bg-white rounded-xl shadow-lg 
+                      border border-gray-100 py-2 animate-dropdown
+                    ">
+                      <a
+                        href="/profile"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        프로필
+                      </a>
+                      <button
+                        onClick={handleLogout}
+                        className="
+                          flex items-center w-full px-4 py-2 text-sm 
+                          text-red-600 hover:bg-red-50
+                        "
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        로그아웃
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
+
+            {/* 모바일 메뉴 버튼 */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="
+                lg:hidden p-2 text-gray-700 
+                hover:bg-white/60 rounded-lg 
+                transition-colors duration-200
+              "
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
           </div>
-        </div>
-      )}
+        </nav>
+      </header>
+
+      {/* 애니메이션 */}
+      <style jsx>{`
+        @keyframes dropdown {
+          0% { opacity: 0; transform: translateY(-8px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-dropdown {
+          animation: dropdown 0.25s ease-out;
+        }
+
+        @keyframes fadeInSlow {
+          0% { opacity: 0; transform: translateY(-6px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInSlow {
+          animation: fadeInSlow 0.4s ease-out;
+        }
+      `}</style>
     </>
   );
 }

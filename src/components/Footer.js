@@ -9,19 +9,17 @@ export default function Footer() {
     { title: "학습", links: [
       { name: "CS 기초 강화", href: "/study/major" },
       { name: "예상 면접 질문 학습", href: "/study/interview" },
-      { name: "스터디 메모", href: "/study/#" }
     ]},
     { title: "면접", links: [
-      { name: "실전형 면접 대비", href: "/interview/all" },
-      { name: "랜덤 면접 시작", href: "/interview/random" },
-      { name: "키워드 면접", href: "/interview/keyword" }
+      { name: "실전 CS 기술 면접", href: "/interview/start" },
+      { name: "나의 면접 기록", href: "/study/interview/record" },
+      { name: "우수 면접 답변", href: "/interview/best-qna" }
     ]},
     { title: "커뮤니티", links: [
-      { name: "자유게시판", href: "/community" },
-      { name: "뉴스 및 채용", href: "/news" }
+      { name: "면접 경험 후기", href: "/study/interview/review" },
     ]},
     { title: "지원", links: [
-      { name: "마이페이지", href: "/mypage" },
+      { name: "프로필", href: "/profile" },
     ]}
   ];
 
